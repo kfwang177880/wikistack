@@ -1,26 +1,25 @@
 const { db } = require('./models/index.js');
 const express = require("express");
+const router = require("express");
 const morgan = require('morgan');
 // Where your server and express add are being defined
 const models = require('./models'); 
-const path = require("path")
-//const wikiRouter = require('./routes/wiki');
-//const userRouter = require('./routes/user');
-const router = require("express");
-
-const PORT = 1337;
+const layout= require('./views/layout')
 
 const app = express();
 
 app.use(morgan('dev'));
-app.use(express.static(__dirname + "stylesheets"));
+app.use(express.static("stylesheets"));
+app.use(express.urlencoded({extended: true}))
+app.use('/wiki', require('./routes/wiki'))
+app.use('/user', require('./routes/user'))
 
 db.authenticate().
   then(() => {
     console.log('connected to the database');
   })
 
-
+const PORT = 3000; 
 const init = async () => {
   await models.User.sync()
   await models.Page.sync()
@@ -30,3 +29,33 @@ const init = async () => {
   });
 }
 init();
+
+router.get('/', (req, res, next) => {
+  try {
+    res.redirect('/wiki')
+  }
+  catch(err) { next(err) }
+});
+
+router.get('/add', (req, res, next) => {
+  try {
+    res.redirect('/wiki/add')
+  }
+  catch(err) { next(err) }
+});
+
+// Handle our errors
+app.use((err, req, res, next) => {
+  console.error(err.message)
+  if (err.message === 404) {
+      res.status(404).send('404 not found')
+  } else {
+      res.status(500).send('Internal Server Error')
+  }
+})
+
+router.post('/', (req, res, next) => {
+  res.send('got to POST /wiki/');
+});
+
+

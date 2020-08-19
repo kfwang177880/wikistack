@@ -1,7 +1,4 @@
 const path = require("path")
-const wikiRouter = require('./routes/wiki');
-const userRouter = require('./routes/user');
+const { Page, User } = require('../models')
+const { wikiPage, main, userList, userPages, addPage } = require('../views')
 
-
-app.use('wiki', wikiRouter);
-// or, in one line: app.user('/wiki', require('./routes/wiki');)
