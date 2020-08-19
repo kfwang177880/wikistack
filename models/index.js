@@ -33,4 +33,4 @@ const User = db.define('user', {
   }
 })
 
-module.export = { db, Page, User } ;
+module.exports = { db, Page, User } ;
