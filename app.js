@@ -1,6 +1,7 @@
 const { db } = require('./models/index.js');
 const express = require("express");
-const router = require("express");
+const { Router } = require("express")
+const router = new Router();
 const morgan = require('morgan');
 // Where your server and express add are being defined
 const models = require('./models'); 
@@ -14,15 +15,15 @@ app.use(express.urlencoded({extended: true}))
 app.use('/wiki', require('./routes/wiki'))
 app.use('/user', require('./routes/user'))
 
-db.authenticate().
-  then(() => {
-    console.log('connected to the database');
-  })
+//db.authenticate().
+//  then(() => {
+//    console.log('connected to the database');
+//  })
 
 const PORT = 3000; 
 const init = async () => {
-  await models.User.sync()
-  await models.Page.sync()
+  await models.User.sync({force: true})
+  await models.Page.sync({force: true})
 // Make sure that you have a PORT constant and to replace the name below with your express app
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}!`);
@@ -30,7 +31,7 @@ const init = async () => {
 }
 init();
 
-router.get('/', (req, res, next) => {
+app.get('/', async (req, res, next) => {
   try {
     res.redirect('/wiki')
   }

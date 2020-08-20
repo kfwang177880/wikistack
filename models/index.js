@@ -17,6 +17,13 @@ const Page = db.define('page', {
   status: {
     type: Sequelize.ENUM('open', 'closed')
   }
+},
+{
+  hooks: {
+    beforeValidate: (page) => {
+      page.slug = page.title.replace(/\s+/g, '_').replace(/\W/g, '')
+    }
+  }
 })
 
 const User = db.define('user', {
@@ -33,4 +40,5 @@ const User = db.define('user', {
   }
 })
 
+Page.belongsTo(User, { as: 'author'})
 module.exports = { db, Page, User } ;

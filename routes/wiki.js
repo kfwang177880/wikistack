@@ -1,8 +1,7 @@
-const path = require("path")
+const { Router } = require('express')
+const path = require('path')
 const { Page, User } = require('../models')
 const { wikiPage, main, userList, userPages, addPage } = require('../views')
-const { Router } = require("express")
-
 const router = new Router();
 
 router.get('/', async (req, res, next) => {
@@ -20,7 +19,7 @@ router.post('/', async (req, res, next) => {
     })
     const page = await Page.create(req.body)
     page.setAuthor(user)           // await Page.save()
-    res.redirect(`/wiki/${page.slag}`)  
+    res.redirect(`/wiki/${page.slug}`)  
   } catch (error) { next(error) }
 });
 
