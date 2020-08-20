@@ -9,7 +9,7 @@ const layout= require('./views/layout')
 const app = express();
 
 app.use(morgan('dev'));
-app.use(express.static("stylesheets"));
+app.use(express.static("public"));
 app.use(express.urlencoded({extended: true}))
 app.use('/wiki', require('./routes/wiki'))
 app.use('/user', require('./routes/user'))
@@ -37,13 +37,6 @@ router.get('/', (req, res, next) => {
   catch(err) { next(err) }
 });
 
-router.get('/add', (req, res, next) => {
-  try {
-    res.redirect('/wiki/add')
-  }
-  catch(err) { next(err) }
-});
-
 // Handle our errors
 app.use((err, req, res, next) => {
   console.error(err.message)
@@ -53,9 +46,3 @@ app.use((err, req, res, next) => {
       res.status(500).send('Internal Server Error')
   }
 })
-
-router.post('/', (req, res, next) => {
-  res.send('got to POST /wiki/');
-});
-
-
