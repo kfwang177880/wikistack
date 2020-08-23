@@ -1,7 +1,5 @@
 const { db } = require('./models/index.js');
-const express = require("express");
-const { Router } = require("express")
-const router = new Router();
+const express = require('express');
 const morgan = require('morgan');
 // Where your server and express add are being defined
 const models = require('./models'); 
@@ -10,7 +8,7 @@ const layout= require('./views/layout')
 const app = express();
 
 app.use(morgan('dev'));
-app.use(express.static("public"));
+app.use(express.static('public'));
 app.use(express.urlencoded({extended: true}))
 app.use('/wiki', require('./routes/wiki'))
 app.use('/user', require('./routes/user'))
@@ -34,6 +32,13 @@ init();
 app.get('/', async (req, res, next) => {
   try {
     res.redirect('/wiki')
+  }
+  catch(err) { next(err) }
+});
+
+app.get('/users', async (req, res, next) => {
+  try {
+    res.redirect('/users')
   }
   catch(err) { next(err) }
 });

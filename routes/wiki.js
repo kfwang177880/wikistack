@@ -1,7 +1,7 @@
 const { Router } = require('express')
-const path = require('path')
+//const path = require('path')
 const { Page, User } = require('../models')
-const { wikiPage, main, userList, userPages, addPage } = require('../views')
+const { wikiPage, main, addPage } = require('../views')
 const router = new Router();
 
 router.get('/', async (req, res, next) => {
@@ -11,7 +11,7 @@ router.get('/', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const [user, wasCreated] = await Page.findOrCreate({
+    const [user, wasCreated] = await User.findOrCreate({
       where: {
         name: req.body.name,
         email: req.body.email
@@ -30,7 +30,7 @@ router.get('/add', (req, res, next) => {
 
 router.get('/:slug', async (req, res, next) => {
   try {
-    const page = await Page.findone({
+    const page = await Page.findOne({
       where: {
         slug: req.params.slug
       }
@@ -39,3 +39,27 @@ router.get('/:slug', async (req, res, next) => {
     res.send(wikiPage(page, author))               // res.json(page)
   } catch(err) { next(err)}
 })
+
+// Update
+router.get('/:slug/edit', async (req, res, next) => {
+  try {
+      const page = await Page.findOne({
+          where: {
+              slug: req.params.slug
+          }
+      })
+      const author = await page.getAuthor()
+      res.send(editPage(page, author))
+  } catch(err) { next(err) }
+})
+// Delete
+router.get('/:slug/delete', async (req, res, next) => {
+  try {
+      const page = await Page.findOne({where: {slug: req.params.slug}})
+      await Page.destroy({where: {id: page.id}})
+      res.redirect('/wiki')
+  } catch(err) { next(err) }
+})
+
+
+module.exports = router

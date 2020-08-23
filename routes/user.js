@@ -4,7 +4,7 @@ const { userList, userPages } = require('../views')
 
 const router = new Router();
 
-router.get('/users', async(req, res, next) => {
+router.get('/', async(req, res, next) => {
   try {
     const users = await User.findAll();
     res.send(userList(users))
@@ -12,9 +12,13 @@ router.get('/users', async(req, res, next) => {
 });
 
 router.get('/:userId', async (req, res, next) => {
-    try {
-      const users = await User.findByPk(req.params.userId);
-      const pages = await Page.findAll( {
+  try {
+      const users = await User.findByPk(req.params.userId, {include: page} );
+      const pages = await users.pages
+      res.send(userPages(user, pages))
+    } catch(err) { next(err) }
+  })
+/*      const pages = await Page.findAll( {
         where: {
           authorId: req.params.userId
         } 
@@ -26,16 +30,16 @@ router.get('/:userId', async (req, res, next) => {
   router.put('/:userId', async (req, res, next) => {
     try {
       const users = await User.findByPk(req.params.userId);
-//      User.name = req.params.name
-//      await User.save();
-//      res.send(userList(users))
+      users.name = req.params.name
+      res.send(await User.save());
     } catch (err) {next(err)}
   });
 
   router.delete('/', async (req, res, next) => {
     try {
       const users = await User.findByPk(req.params.userId);
-      await users.distroy();
+      res.send(await User.distroy());
     } catch (err) {next(err)}
   });
-  
+*/ 
+module.exports = router
